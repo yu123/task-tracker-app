@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Button, Text, Input} from 'react-native-elements';
+import {View} from 'react-native';
+import {Header, Button, Text, Input} from 'react-native-elements';
 import {useAuth} from './AuthProvider';
 
 // This view has an input for email and password and logs in the user when the
@@ -13,36 +14,44 @@ export function LogInView() {
 
   return (
     <>
-      <Text h3>{authMode}</Text>
-      <Input
-        autoCapitalize="none"
-        placeholder="email"
-        onChangeText={setEmail}
+      <Header
+        centerComponent={{text: 'TASK TRACKER', style: {color: '#fff'}}}
       />
-      <Input
-        secureTextEntry={true}
-        placeholder="password"
-        onChangeText={setPassword}
-      />
-      <Button
-        onPress={async () => {
-          console.log(`${authMode} button pressed with email ${email}`);
-          setError(null);
-          try {
-            if (authMode === 'Login') {
-              await logIn(email, password);
-            } else {
-              await registerUser(email, password);
-              setAuthMode('Login');
+      <View style={{margin: 12}}>
+        <Text h3>{authMode}</Text>
+        <Input
+          autoCapitalize="none"
+          placeholder="email"
+          onChangeText={setEmail}
+        />
+        <Input
+          secureTextEntry={true}
+          placeholder="password"
+          onChangeText={setPassword}
+        />
+        <Button
+          onPress={async () => {
+            console.log(`${authMode} button pressed with email ${email}`);
+            setError(null);
+            try {
+              if (authMode === 'Login') {
+                await logIn(email, password);
+              } else {
+                await registerUser(email, password);
+                setAuthMode('Login');
+              }
+            } catch (e) {
+              setError(`Operation failed: ${e.message}`);
             }
-          } catch (e) {
-            setError(`Operation failed: ${e.message}`);
-          }
-        }}
-        title={authMode}
-      />
-      <Text>{error}</Text>
-      <ToggleAuthModeComponent setAuthMode={setAuthMode} authMode={authMode} />
+          }}
+          title={authMode}
+        />
+        <Text>{error}</Text>
+        <ToggleAuthModeComponent
+          setAuthMode={setAuthMode}
+          authMode={authMode}
+        />
+      </View>
     </>
   );
 }
